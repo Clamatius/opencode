@@ -548,6 +548,7 @@ export namespace Session {
     let system = mode.prompt ? [mode.prompt] : SystemPrompt.provider(input.providerID, input.modelID)
     system.push(...(await SystemPrompt.environment()))
     system.push(...(await SystemPrompt.custom()))
+    system.push(...(await SystemPrompt.perTurn())) // NEW: Per-turn context injection
     // max 2 system prompt messages for caching purposes
     const [first, ...rest] = system
     system = [first, rest.join("\n")]

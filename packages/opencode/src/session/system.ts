@@ -83,6 +83,19 @@ export namespace SystemPrompt {
     return Promise.all(found).then((result) => result.filter(Boolean))
   }
 
+  export async function perTurn() {
+    const files = []
+    const glob = new Bun.Glob("nav-context-*.md")
+    for await (const file of glob.scan({
+      cwd: "/tmp",
+      onlyFiles: true,
+    })) {
+      files.push(path.join("/tmp", file))
+    }
+    const content = await Promise.all(files.map(f => Bun.file(f).text()))
+    return content.filter(Boolean)
+  }
+
   export function summarize(providerID: string) {
     switch (providerID) {
       case "anthropic":
